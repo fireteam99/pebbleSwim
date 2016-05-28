@@ -1,0 +1,20 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "raymancheungsy@gmail.com",
+    "enableMultiJS": false,
+    "longName": "Pebble Swim",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "Pebble Swim",
+    "uuid": "2ae64572-c97c-45f6-b1b7-73bf6cc158c3",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
