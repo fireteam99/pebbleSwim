@@ -8,7 +8,32 @@
     "longName": "Pebble Swim",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "fonts/Helv Children.otf",
+                "name": "FONT_HELVETICA_CHILDREN_12",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "fonts/Helv Children.otf",
+                "name": "FONT_HELVETICA_CHILDREN_18",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "fonts/helvetica-destru-pix.ttf",
+                "name": "FONT_HELVETICA_DESTRU_12",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "fonts/helvetica-destru-pix.ttf",
+                "name": "FONT_HELVETICA_DESTRU_21",
+                "targetPlatforms": null,
+                "type": "font"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "Pebble Swim",
