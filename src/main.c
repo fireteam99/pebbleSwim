@@ -1,23 +1,36 @@
 #include <pebble.h>
 
-Window *window; //ppd
+Window *window;
+static Window *s_main_window;
 TextLayer *text_layer;
 
+static void main_window_load(Window *window) {
+  
+}
+
+static void main_window_unload(Window *window) {
+  
+}
+
 //initialize window
-void init() { 
-  window = window_create();
-  window_stack_push(window, true);
-  text_layer = text_layer_create(GRect(0, 0, 144, 40));
-  //Sets up the text
-  text_layer_set_text(text_layer, "Welcome to Pebble Swim");
-  //adds the text layer as a child to the rendering
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(text_layer));
+static void init() { 
+  //create the main window
+  s_main_window = window_create();
+  
+  //set handlers so you can do stuff within the window
+  window_set_window_handlers(s_main_window, (WindowHandlers) {
+    .load = main_window_load,
+    .unload = main_window_unload
+  });
+  
+  //display the main window by pushing it onto the stack
+  window_stack_push(s_main_window, true);
+
 }
 
 //uninitialize window
-void denit() {
-  window_destroy(window);
-  text_layer_destroy(text_layer);
+static void deinit() {
+  window_destroy(s_main_window);
 }
 
 int main() {
@@ -28,7 +41,7 @@ int main() {
   app_event_loop();
   
   //denitialize app
-  denit();
+  deinit();
   
   return 0;
 }  
