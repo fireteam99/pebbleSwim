@@ -1,17 +1,24 @@
 #include <pebble.h>
 
+//Stuff for first window
 static TextLayer *s_welcome_layer;
 static TextLayer *s_welcome_layer_begin;
-static Window *s_main_window;
+static Window *s_welcome_window;
 static GFont s_welcome_font;
 static GFont s_welcome_begin_font;
 
-static void main_window_load(Window *window) {  
+//Stuff for second window
+static Window *s_timer_window;
+
+//loads welcome window layers
+static void welcome_window_load(Window *window) {
+  //intialize fonts
   s_welcome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_HELVETICA_CHILDREN_18));
   s_welcome_begin_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_HELVETICA_CHILDREN_12));
   
   Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer); //gets the boundaries based on type of watch
+  //gets the boundaries based on type of watch
+  GRect bounds = layer_get_bounds(window_layer); 
   
   //sets the textlayer to the constraints
   s_welcome_layer = text_layer_create(
@@ -37,33 +44,76 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_welcome_layer_begin));
 }
 
-static void main_window_unload(Window *window) {
+//destroys layers in welcome window
+static void welcome_window_unload(Window *window) {
   text_layer_destroy(s_welcome_layer);
   text_layer_destroy(s_welcome_layer_begin);
 }
 
-//initialize window
+//switches the screen to the timer
+static void display_timer_screen(void) {
+  window_stack_push(s_timer_window, false);
+}
+
+//calls the switching function when a single click detected
+static void select_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
+  display_timer_screen();
+}
+
+//define the types of clicks
+static void config_provider(Window *window) {  
+  //single click configs
+  window_single_click_subscribe(BUTTON_ID_SELECT, (ClickHandler) select_single_click_handler);
+}
+
+//Functions relating to second window
+
+//initializes layers 
+static void timer_window_load(Window *window) {
+  Layer *window_layer = window_get_root_layer(window);
+  //gets the boundaries based on type of watch
+  GRect bounds = layer_get_bounds(window_layer);
+}
+
+//destroys layers
+static void timer_window_unload(Window *window) {
+  
+}
+
+
+//initialize all windows
 static void init() { 
-  //create the main window
-  s_main_window = window_create();
+  //create the welcome window
+  s_welcome_window = window_create();
+  s_timer_window = window_create();
   
-  //set the background for the window
-  window_set_background_color(s_main_window, GColorVividCerulean);
+  //set the background for the windows
+  window_set_background_color(s_welcome_window, GColorVividCerulean);
+  window_set_background_color(s_timer_window, GColorVividCerulean);
   
-  //set handlers so you can do stuff within the window
-  window_set_window_handlers(s_main_window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload
+  //set handlers so you can do stuff within the welcome window
+  window_set_window_handlers(s_welcome_window, (WindowHandlers) {
+    .load = welcome_window_load,
+    .unload = welcome_window_unload
+  });
+  //set handlers so you can do stuff within the timer window
+  window_set_window_handlers(s_timer_window, (WindowHandlers) {
+    .load = timer_window_load,
+    .unload = timer_window_unload
   });
   
-  //display the main window by pushing it onto the stack
-  window_stack_push(s_main_window, true);
+  //sets up button functionality for welcome window
+    window_set_click_config_provider(s_welcome_window, (ClickConfigProvider) config_provider);
+  
+  //display the welcome window by pushing it onto the stack
+  window_stack_push(s_welcome_window, true);
 
 }
 
-//uninitialize window
+//uninitialize all windows
 static void deinit() {
-  window_destroy(s_main_window);
+  window_destroy(s_welcome_window);
+  window_destroy(s_timer_window);
 }
 
 int main() {
