@@ -9,6 +9,12 @@ static GFont s_welcome_begin_font;
 
 //Stuff for second window
 static Window *s_timer_window;
+static TextLayer *s_timer_layer;
+static TextLayer *s_completion_layer;
+static TextLayer *s_info_layer;
+static GFont s_timer_font;
+static GFont s_completion_font;
+static GFont s_info_font;
 
 //loads welcome window layers
 static void welcome_window_load(Window *window) {
@@ -48,6 +54,8 @@ static void welcome_window_load(Window *window) {
 static void welcome_window_unload(Window *window) {
   text_layer_destroy(s_welcome_layer);
   text_layer_destroy(s_welcome_layer_begin);
+  fonts_unload_custom_font(s_welcome_font);
+  fonts_unload_custom_font(s_welcome_begin_font);
 }
 
 //switches the screen to the timer
@@ -68,16 +76,63 @@ static void config_provider(Window *window) {
 
 //Functions relating to second window
 
-//initializes layers 
+//initializes timer layers 
 static void timer_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
+  
   //gets the boundaries based on type of watch
   GRect bounds = layer_get_bounds(window_layer);
+  
+  //creates and sets the textlayers to the constraints
+  s_timer_layer = text_layer_create(
+      GRect(0, PBL_IF_ROUND_ELSE(58, 52), bounds.size.w, 50));
+  s_completion_layer = text_layer_create(
+      GRect(0, PBL_IF_ROUND_ELSE(58, 120), bounds.size.w, 50));
+  s_info_layer = text_layer_create(
+      GRect(0, PBL_IF_ROUND_ELSE(58, 25), bounds.size.w, 50));
+  
+  
+  //initialize custom fonts
+  s_timer_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MECHANICAL_OUT_OBL_40));
+  s_completion_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MECHANICAL_OUT_OBL_18));
+  s_info_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MECHANICAL_OUT_OBL_16));
+  
+  
+  //format text layouts
+  text_layer_set_background_color(s_timer_layer, GColorClear);
+  text_layer_set_text(s_timer_layer, "00:00");
+  text_layer_set_text_color(s_timer_layer, GColorWhite);
+  text_layer_set_font(s_timer_layer, s_timer_font);
+  text_layer_set_text_alignment(s_timer_layer, GTextAlignmentCenter);
+  
+  text_layer_set_background_color(s_info_layer, GColorClear);
+  text_layer_set_text(s_info_layer, "100 Free");
+  text_layer_set_text_color(s_info_layer, GColorWhite);
+  text_layer_set_font(s_info_layer, s_info_font);
+  text_layer_set_text_alignment(s_info_layer, GTextAlignmentCenter);
+  
+  text_layer_set_background_color(s_completion_layer, GColorClear);
+  text_layer_set_text(s_completion_layer, "4/5");
+  text_layer_set_text_color(s_completion_layer, GColorWhite);
+  text_layer_set_font(s_completion_layer, s_completion_font);
+  text_layer_set_text_alignment(s_completion_layer, GTextAlignmentCenter);
+  
+  //Add the text layer to the root layer
+  layer_add_child(window_layer, text_layer_get_layer(s_timer_layer));
+  layer_add_child(window_layer, text_layer_get_layer(s_info_layer));
+  layer_add_child(window_layer, text_layer_get_layer(s_completion_layer));
 }
 
-//destroys layers
+//destroys timer layers/fonts
 static void timer_window_unload(Window *window) {
+  text_layer_destroy(s_timer_layer);
+  text_layer_destroy(s_info_layer);
+  text_layer_destroy(s_completion_layer);
   
+  fonts_unload_custom_font(s_timer_font);
+  fonts_unload_custom_font(s_completion_font);
+  fonts_unload_custom_font(s_info_font);
+
 }
 
 

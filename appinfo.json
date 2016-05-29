@@ -10,6 +10,24 @@
     "resources": {
         "media": [
             {
+                "file": "fonts/MechanicalOutObl.otf",
+                "name": "FONT_MECHANICAL_OUT_OBL_16",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "fonts/MechanicalOutObl.otf",
+                "name": "FONT_MECHANICAL_OUT_OBL_18",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "fonts/MechanicalOutObl.otf",
+                "name": "FONT_MECHANICAL_OUT_OBL_40",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
                 "file": "fonts/Helv Children.otf",
                 "name": "FONT_HELVETICA_CHILDREN_12",
                 "targetPlatforms": null,
