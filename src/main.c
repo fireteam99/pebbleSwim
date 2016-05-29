@@ -1,5 +1,18 @@
 #include <pebble.h>
 
+//make sure the js file is ready to be loaded
+typedef enum {
+  AppKeyReady = 0
+} AppKey;
+
+static void inbox_received_handler(DictionaryIterator *iter, void *context) {
+  Tuple *ready_tuple = dict_find(iter, AppKeyReady);
+  if(ready_tuple) {
+    // PebbleKit JS is ready! Safe to send messages
+    // run initialization functions
+  }
+}
+
 //Stuff for first window
 static TextLayer *s_welcome_layer;
 static TextLayer *s_welcome_layer_begin;
@@ -15,6 +28,7 @@ static TextLayer *s_info_layer;
 static GFont s_timer_font;
 static GFont s_completion_font;
 static GFont s_info_font;
+
 
 //loads welcome window layers
 static void welcome_window_load(Window *window) {
@@ -68,11 +82,12 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, Window *w
   display_timer_screen();
 }
 
-//define the types of clicks
-static void config_provider(Window *window) {  
+//define the types of clicks for welcome
+static void config_provider_welcome(Window *window) {  
   //single click configs
   window_single_click_subscribe(BUTTON_ID_SELECT, (ClickHandler) select_single_click_handler);
 }
+
 
 //Functions relating to second window
 
@@ -123,6 +138,12 @@ static void timer_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_completion_layer));
 }
 
+//streams data from the phone to the watch
+static void update_timer() {
+  //variables streamed from the phone
+  //write them into textlayers
+}
+
 //destroys timer layers/fonts
 static void timer_window_unload(Window *window) {
   text_layer_destroy(s_timer_layer);
@@ -135,9 +156,34 @@ static void timer_window_unload(Window *window) {
 
 }
 
+//creates the tick handler
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  update_timer();
+}
+
+//defines the up click
+static void up_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
+  //calls function to pass boolean
+}
+
+//defines the down click
+static void down_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
+  //calls function to pass boolean
+}
+
+//define the types of clicks for timer
+static void config_provider_welcome(Window *window) {  
+  //single click configs
+  window_single_click_subscribe(BUTTON_ID_SELECT, (ClickHandler) up_single_click_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, (ClickHandler) down_single_click_handler);
+}
+
 
 //initialize all windows
 static void init() { 
+  //initializes ticker time services
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
+  
   //create the welcome window
   s_welcome_window = window_create();
   s_timer_window = window_create();
@@ -158,7 +204,10 @@ static void init() {
   });
   
   //sets up button functionality for welcome window
-    window_set_click_config_provider(s_welcome_window, (ClickConfigProvider) config_provider);
+  window_set_click_config_provider(s_welcome_window, (ClickConfigProvider) config_provider_welcome);
+  
+  //set up button functionality for timer window
+  window_set_click_config_provider(s_timer_window, (ClickConfigProvider) config_provider_timer);
   
   //display the welcome window by pushing it onto the stack
   window_stack_push(s_welcome_window, true);
